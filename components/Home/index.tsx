@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 import TypeSelector from '../TypeSelector';
-import { Type } from '../../types/d';
+import { Type, PokemonType } from '../../types/d';
 
 const styles = StyleSheet.create({
   title: {
@@ -34,29 +34,92 @@ const Home = () => {
       }
     }
   }
+  function weaknessCalculate() {
+    const typeMap = {}
+    selected.forEach((selectedType: Type) => selectedType.weakTo.forEach((weakType: PokemonType) => {
+
+      if (weakType in typeMap) {
+        typeMap[weakType] += 1
+      } else {
+        typeMap[weakType] = 1
+      }
+    }))
+
+    return [Object.entries(typeMap).filter(b => b[1] === 2).map(c => c[0]), Object.entries(typeMap).filter(b => b[1] === 1).map(c => c[0])]
+  }
+  function resistanceCalculate() {
+    const typeMap = {}
+    selected.forEach((selectedType: Type) => selectedType.resistantAgainst.forEach((resistantType: PokemonType) => {
+
+      if (resistantType in typeMap) {
+        typeMap[resistantType] += 1
+      } else {
+        typeMap[resistantType] = 1
+      }
+    }))
+
+    return [Object.entries(typeMap).filter(b => b[1] === 2).map(c => c[0]), Object.entries(typeMap).filter(b => b[1] === 1).map(c => c[0])]
+  }
+  function immuneCalculate() {
+    const types = [];
+    selected.forEach((selectedType: Type) => selectedType.immuneTo.forEach((immuneType: PokemonType) => {
+
+      if (!types.find(t => t === immuneType)) {
+        types.push(immuneType)
+      }
+    }))
+    return types;
+  }
+
+  const [superWeak, weak] = weaknessCalculate();
+  const [superResistant, resistant] = resistanceCalculate();
+  const immune = immuneCalculate();
+
   return (
     <View>
       <TypeSelector onSelect={handleSelect} selected={selected} />
       {!!selected.length && (
         <View>
-          <View style={styles.resultContainer}>
-            <Text style={styles.title}>Weak to:</Text>
+          {!!superWeak.length && (
+            <View style={styles.resultContainer}>
+            <Text style={styles.title}>Super Weak to:</Text>
             <Text style={styles.output}>
-              {selected.map(type => type.weakTo.join(',')).join(',')}
+              {superWeak.join(', ')}
             </Text>
           </View>
+          )}
+          {!!weak.length && (
+            <View style={styles.resultContainer}>
+            <Text style={styles.title}>Weak to:</Text>
+            <Text style={styles.output}>
+              {weak.join(', ')}
+            </Text>
+          </View>
+          )}
+          {!!immune.length && (
           <View style={styles.resultContainer}>
             <Text style={styles.title}>Immune to:</Text>
             <Text style={[styles.output]}>
-              {selected.map(type => type.immuneTo.join(',')).join(',')}
+              {immune.join(', ')}
             </Text>
           </View>
+          )}
+          {!!resistant.length && (
           <View style={styles.resultContainer}>
             <Text style={styles.title}>Resistant against:</Text>
             <Text style={styles.output}>
-              {selected.map(type => type.resistantAgainst.join(',')).join(',')}
+              {resistant.join(', ')}
             </Text>
           </View>
+          )}
+          {!!superResistant.length && (
+          <View style={styles.resultContainer}>
+            <Text style={styles.title}>Super Resistant against:</Text>
+            <Text style={styles.output}>
+              {superResistant.join(', ')}
+            </Text>
+          </View>
+          )}
         </View>
       )}
     </View>
