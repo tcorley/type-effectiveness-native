@@ -27,7 +27,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'purple'
   },
   disabled: {
-    borderColor: 'grey',
+    borderColor: 'grey'
+  },
+  disabledText: {
     color: 'grey'
   }
 });
@@ -51,7 +53,10 @@ const TypeToggle = ({ type, selected, disabled, onChange }: Props) => {
       disabled={disabled && !selected}
     >
       <Text
-        style={[classes.toggleText, disabled && !selected && classes.disabled]}
+        style={[
+          classes.toggleText,
+          disabled && !selected && classes.disabledText
+        ]}
       >
         {type.name}
       </Text>

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 import TypeSelector from '../TypeSelector';
 import { Type, PokemonType } from '../../types/d';
+import pokemonTypes from '../../data/types';
 
 const styles = StyleSheet.create({
   title: {
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
 });
 
 const Home = () => {
-  const [selected, setSelected] = useState([]);
+  const [selected, setSelected] = useState<Type[]>([]);
   function handleSelect(type: Type) {
     if (
       selected.filter(selectedType => selectedType.name === type.name)
@@ -34,46 +35,64 @@ const Home = () => {
       }
     }
   }
-  function weaknessCalculate() {
-    const typeMap = {}
-    selected.forEach((selectedType: Type) => selectedType.weakTo.forEach((weakType: PokemonType) => {
 
-      if (weakType in typeMap) {
-        typeMap[weakType] += 1
-      } else {
-        typeMap[weakType] = 1
-      }
-    }))
+  const {
+    superWeak,
+    weak,
+    superResistant,
+    resistant,
+    immune,
+    normal
+  } = useMemo(() => {
+    const superWeak = [];
+    const weak = [];
+    const superResistant = [];
+    const resistant = [];
+    const immune = [];
+    const normal = [];
 
-    return [Object.entries(typeMap).filter(b => b[1] === 2).map(c => c[0]), Object.entries(typeMap).filter(b => b[1] === 1).map(c => c[0])]
-  }
-  function resistanceCalculate() {
-    const typeMap = {}
-    selected.forEach((selectedType: Type) => selectedType.resistantAgainst.forEach((resistantType: PokemonType) => {
+    pokemonTypes
+      .map((t: Type) => t.name)
+      .forEach((p: PokemonType) => {
+        const type1 = selected[0];
+        const type2 = selected[1];
 
-      if (resistantType in typeMap) {
-        typeMap[resistantType] += 1
-      } else {
-        typeMap[resistantType] = 1
-      }
-    }))
+        if (type1 && !type2) {
+          if (type1.weakTo.includes(p)) weak.push(p);
+          else if (type1.resistantAgainst.includes(p)) resistant.push(p);
+          else if (type1.immuneTo.includes(p)) immune.push(p);
+          else normal.push(p);
+        } else if (type1 && type2) {
+          if (type1.weakTo.includes(p) && type2.weakTo.includes(p))
+            superWeak.push(p);
+          else if (
+            type1.resistantAgainst.includes(p) &&
+            type2.resistantAgainst.includes(p)
+          )
+            superResistant.push(p);
+          else if (
+            (type1.weakTo.includes(p) && type2.resistantAgainst.includes(p)) ||
+            (type1.resistantAgainst.includes(p) && type2.weakTo.includes(p))
+          )
+            normal.push(p);
+          else if (type1.immuneTo.includes(p) || type2.immuneTo.includes(p))
+            immune.push(p);
+          else if (
+            [...type1.weakTo, ...type2.weakTo].filter(v => v === p).length == 1
+          )
+            weak.push(p);
+          else if (
+            [...type1.resistantAgainst, ...type2.resistantAgainst].filter(
+              v => v === p
+            ).length == 1
+          )
+            resistant.push(p);
+          else normal.push(p);
+        }
+      });
 
-    return [Object.entries(typeMap).filter(b => b[1] === 2).map(c => c[0]), Object.entries(typeMap).filter(b => b[1] === 1).map(c => c[0])]
-  }
-  function immuneCalculate() {
-    const types = [];
-    selected.forEach((selectedType: Type) => selectedType.immuneTo.forEach((immuneType: PokemonType) => {
-
-      if (!types.find(t => t === immuneType)) {
-        types.push(immuneType)
-      }
-    }))
-    return types;
-  }
-
-  const [superWeak, weak] = weaknessCalculate();
-  const [superResistant, resistant] = resistanceCalculate();
-  const immune = immuneCalculate();
+    return { superWeak, weak, superResistant, resistant, immune, normal };
+  }, [selected]);
 
   return (
     <View>
@@ -82,43 +101,39 @@ const Home = () => {
         <View>
           {!!superWeak.length && (
             <View style={styles.resultContainer}>
-            <Text style={styles.title}>Super Weak to:</Text>
-            <Text style={styles.output}>
-              {superWeak.join(', ')}
-            </Text>
-          </View>
+              <Text style={styles.title}>Super Weak to:</Text>
+              <Text style={styles.output}>{superWeak.join(', ')}</Text>
+            </View>
           )}
           {!!weak.length && (
             <View style={styles.resultContainer}>
-            <Text style={styles.title}>Weak to:</Text>
-            <Text style={styles.output}>
-              {weak.join(', ')}
-            </Text>
-          </View>
+              <Text style={styles.title}>Weak to:</Text>
+              <Text style={styles.output}>{weak.join(', ')}</Text>
+            </View>
           )}
           {!!immune.length && (
-          <View style={styles.resultContainer}>
-            <Text style={styles.title}>Immune to:</Text>
-            <Text style={[styles.output]}>
-              {immune.join(', ')}
-            </Text>
-          </View>
+            <View style={styles.resultContainer}>
+              <Text style={styles.title}>Immune to:</Text>
+              <Text style={[styles.output]}>{immune.join(', ')}</Text>
+            </View>
           )}
           {!!resistant.length && (
-          <View style={styles.resultContainer}>
-            <Text style={styles.title}>Resistant against:</Text>
-            <Text style={styles.output}>
-              {resistant.join(', ')}
-            </Text>
-          </View>
+            <View style={styles.resultContainer}>
+              <Text style={styles.title}>Resistant against:</Text>
+              <Text style={styles.output}>{resistant.join(', ')}</Text>
+            </View>
           )}
           {!!superResistant.length && (
-          <View style={styles.resultContainer}>
-            <Text style={styles.title}>Super Resistant against:</Text>
-            <Text style={styles.output}>
-              {superResistant.join(', ')}
-            </Text>
-          </View>
+            <View style={styles.resultContainer}>
+              <Text style={styles.title}>Super Resistant against:</Text>
+              <Text style={styles.output}>{superResistant.join(', ')}</Text>
+            </View>
+          )}
+          {!!normal.length && (
+            <View style={styles.resultContainer}>
+              <Text style={styles.title}>Damaged normally by:</Text>
+              <Text style={styles.output}>{normal.join(', ')}</Text>
+            </View>
           )}
         </View>
       )}
