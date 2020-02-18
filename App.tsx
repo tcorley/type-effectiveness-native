@@ -1,16 +1,18 @@
 import React from 'react';
-import { StyleSheet, Text, View, SafeAreaView, StatusBar } from 'react-native';
+import { StyleSheet, View, StatusBar, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-navigation';
 import Home from './components/Home';
 
 export default function App() {
   StatusBar.setBarStyle('light-content', true);
 
   return (
-    <SafeAreaView style={styles.safeContainer}>
-      <View style={styles.container}>
-        <Text style={styles.text}>Choose a Type</Text>
-        <Home />
-      </View>
+    <SafeAreaView style={styles.safeContainer} forceInset={{ bottom: 'never' }}>
+      <ScrollView>
+        <View style={styles.container}>
+          <Home />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -22,9 +24,5 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 24
-  },
-  text: {
-    color: 'white',
-    fontSize: 40
   }
 });

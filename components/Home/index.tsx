@@ -4,18 +4,17 @@ import { View, Text, StyleSheet } from 'react-native';
 import TypeSelector from '../TypeSelector';
 import { Type, PokemonType } from '../../types/d';
 import pokemonTypes from '../../data/types';
+import results, { Result } from '../../data/results';
+import ResultPlatter from '../ResultPlatter';
 
 const styles = StyleSheet.create({
   title: {
     color: 'white',
     fontSize: 40
   },
-  output: {
+  description: {
     color: 'white',
     fontSize: 20
-  },
-  resultContainer: {
-    paddingBottom: 20
   }
 });
 
@@ -36,14 +35,7 @@ const Home = () => {
     }
   }
 
-  const {
-    superWeak,
-    weak,
-    superResistant,
-    resistant,
-    immune,
-    normal
-  } = useMemo(() => {
+  const calculatedResults = useMemo(() => {
     const superWeak = [];
     const weak = [];
     const superResistant = [];
@@ -96,47 +88,20 @@ const Home = () => {
 
   return (
     <View>
+      <Text style={styles.title}>Pokemon Type Effectiveness Calculator</Text>
+      <Text style={styles.description}>
+        Select a type or two to see the effectivness of attacks again them.
+      </Text>
       <TypeSelector onSelect={handleSelect} selected={selected} />
-      {!!selected.length && (
-        <View>
-          {!!superWeak.length && (
-            <View style={styles.resultContainer}>
-              <Text style={styles.title}>Super Weak to:</Text>
-              <Text style={styles.output}>{superWeak.join(', ')}</Text>
-            </View>
-          )}
-          {!!weak.length && (
-            <View style={styles.resultContainer}>
-              <Text style={styles.title}>Weak to:</Text>
-              <Text style={styles.output}>{weak.join(', ')}</Text>
-            </View>
-          )}
-          {!!immune.length && (
-            <View style={styles.resultContainer}>
-              <Text style={styles.title}>Immune to:</Text>
-              <Text style={[styles.output]}>{immune.join(', ')}</Text>
-            </View>
-          )}
-          {!!resistant.length && (
-            <View style={styles.resultContainer}>
-              <Text style={styles.title}>Resistant against:</Text>
-              <Text style={styles.output}>{resistant.join(', ')}</Text>
-            </View>
-          )}
-          {!!superResistant.length && (
-            <View style={styles.resultContainer}>
-              <Text style={styles.title}>Super Resistant against:</Text>
-              <Text style={styles.output}>{superResistant.join(', ')}</Text>
-            </View>
-          )}
-          {!!normal.length && (
-            <View style={styles.resultContainer}>
-              <Text style={styles.title}>Damaged normally by:</Text>
-              <Text style={styles.output}>{normal.join(', ')}</Text>
-            </View>
-          )}
-        </View>
-      )}
+      {results
+        .filter(i => calculatedResults[i.path].length > 0)
+        .map((result: Result) => (
+          <ResultPlatter
+            {...result}
+            results={calculatedResults}
+            key={result.title}
+          />
+        ))}
     </View>
   );
 };

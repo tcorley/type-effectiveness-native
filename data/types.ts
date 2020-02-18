@@ -58,7 +58,7 @@ const types: Type[] = [
   {
     name: 'Flying',
     immuneTo: ['Ground'],
-    weakTo: ['Electric', 'Ice'],
+    weakTo: ['Electric', 'Ice', 'Rock'],
     resistantAgainst: ['Grass', 'Fighting', 'Bug']
   },
   {
