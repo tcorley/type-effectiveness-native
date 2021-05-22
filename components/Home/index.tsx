@@ -10,23 +10,23 @@ import ResultPlatter from '../ResultPlatter';
 const styles = StyleSheet.create({
   title: {
     color: 'white',
-    fontSize: 40
+    fontSize: 40,
   },
   description: {
     color: 'white',
-    fontSize: 20
-  }
+    fontSize: 20,
+  },
 });
 
 const Home = () => {
   const [selected, setSelected] = useState<Type[]>([]);
   function handleSelect(type: Type) {
     if (
-      selected.filter(selectedType => selectedType.name === type.name)
+      selected.filter((selectedType) => selectedType.name === type.name)
         .length === 1
     ) {
       setSelected(
-        selected.filter(selectedType => selectedType.name !== type.name)
+        selected.filter((selectedType) => selectedType.name !== type.name)
       );
     } else {
       if (selected.length < 2) {
@@ -35,13 +35,13 @@ const Home = () => {
     }
   }
 
-  const calculatedResults = useMemo(() => {
-    const superWeak = [];
-    const weak = [];
-    const superResistant = [];
-    const resistant = [];
-    const immune = [];
-    const normal = [];
+  const calculatedResults: Record<string, PokemonType[]> = useMemo(() => {
+    const superWeak: PokemonType[] = [];
+    const weak: PokemonType[] = [];
+    const superResistant: PokemonType[] = [];
+    const resistant: PokemonType[] = [];
+    const immune: PokemonType[] = [];
+    const normal: PokemonType[] = [];
 
     pokemonTypes
       .map((t: Type) => t.name)
@@ -70,12 +70,13 @@ const Home = () => {
           else if (type1.immuneTo.includes(p) || type2.immuneTo.includes(p))
             immune.push(p);
           else if (
-            [...type1.weakTo, ...type2.weakTo].filter(v => v === p).length == 1
+            [...type1.weakTo, ...type2.weakTo].filter((v) => v === p).length ==
+            1
           )
             weak.push(p);
           else if (
             [...type1.resistantAgainst, ...type2.resistantAgainst].filter(
-              v => v === p
+              (v) => v === p
             ).length == 1
           )
             resistant.push(p);
@@ -94,7 +95,7 @@ const Home = () => {
       </Text>
       <TypeSelector onSelect={handleSelect} selected={selected} />
       {results
-        .filter(i => calculatedResults[i.path].length > 0)
+        .filter((i) => calculatedResults[i.path].length > 0)
         .map((result: Result) => (
           <ResultPlatter
             {...result}
