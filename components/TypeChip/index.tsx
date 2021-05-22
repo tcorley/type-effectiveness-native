@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import colorTypeMap from '../../data/colorTypeMap';
+import { PokemonType } from '../../types/d';
 
 type Props = {
   name: string;
@@ -14,11 +15,11 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     borderStyle: 'solid',
     borderWidth: 1,
-    position: 'relative'
+    position: 'relative',
   },
   text: {
-    color: 'white'
-  }
+    color: 'white',
+  },
 });
 
 const TypeChip = ({ name }: Props) => (
@@ -26,8 +27,8 @@ const TypeChip = ({ name }: Props) => (
     style={[
       styles.container,
       {
-        backgroundColor: colorTypeMap[name]
-      }
+        backgroundColor: colorTypeMap[name as PokemonType],
+      },
     ]}
   >
     <Text style={styles.text}>{name}</Text>

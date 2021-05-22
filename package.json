@@ -7,25 +7,26 @@
     "eject": "expo eject",
     "build": "next build"
   },
+  "license": "MIT",
   "main": "node_modules/expo/AppEntry.js",
   "dependencies": {
-    "@expo/next-adapter": "^2.0.5",
-    "expo": "~36.0.0",
-    "next": "^9.2.1",
-    "react": "~16.9.0",
-    "react-dom": "~16.9.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
+    "@expo/next-adapter": "^2.1.73",
+    "expo": "~41.0.1",
+    "next": "^10",
+    "react": "~16.13.1",
+    "react-dom": "~16.13.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz",
     "react-native-gesture-handler": "~1.5.0",
     "react-native-screens": "2.0.0-alpha.12",
-    "react-native-web": "~0.11.7",
+    "react-native-web": "~0.13.12",
     "react-navigation": "^4.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@types/react": "~16.9.0",
-    "@types/react-native": "~0.60.23",
+    "@babel/core": "^7.9.0",
+    "@types/react": "~16.9.35",
+    "@types/react-native": "~0.63.2",
     "babel-preset-expo": "~8.0.0",
-    "typescript": "~3.6.3"
+    "typescript": "~4.0.0"
   },
   "private": true
 }
