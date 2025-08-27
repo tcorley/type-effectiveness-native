@@ -1,2 +1,18 @@
-// @generated: @expo/next-adapter@2.0.5
-export { default } from '@expo/next-adapter/document';
+// Updated for Node.js 22 compatibility
+import Document, { Html, Head, Main, NextScript } from 'next/document';
+
+class MyDocument extends Document {
+  render() {
+    return (
+      <Html>
+        <Head />
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
+}
+
+export default MyDocument;
