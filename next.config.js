@@ -5,12 +5,13 @@ const { withExpo } = require('@expo/next-adapter');
 
 module.exports = withExpo({
   webpack: (config) => {
-    // Fix for react-native-web directory import issues with Node.js 22
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      'react-native-web/dist/exports/StyleSheet/compiler$': 
-        'react-native-web/dist/exports/StyleSheet/compiler/index.js',
-    };
+    // Configure module resolution for better Node.js 22 compatibility
+    config.module.rules.push({
+      test: /\.m?js$/,
+      resolve: {
+        fullySpecified: false, // Allow importing without file extensions
+      },
+    });
 
     return config;
   },
